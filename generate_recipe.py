@@ -3,6 +3,7 @@ import requests
 import sys
 import hashlib
 import os
+import subprocess as sp
 
 
 bio_tools_pkg_url = 'https://www.bio.tools/api/tool'
@@ -33,6 +34,9 @@ if __name__ == '__main__':
     if r.status_code != 200:
         print('Package does not exist')
         sys.exit()
+
+    sp.call(['git checkout master'], shell=True)
+    sp.call(['git checkout -b' + sys.argv[1]], shell=True)
 
     document = """package:
     name: {0}
