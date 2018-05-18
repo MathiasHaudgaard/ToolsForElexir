@@ -24,7 +24,7 @@ def getAttributes(metaData):
             doi = pub['doi']
             break
 
-    return [name, version, fn, url, sha, home, summary, biotool_id, doi]
+    return [name.lower(), version, fn, url, sha, home, summary, biotool_id, doi, name]
             
     
 
@@ -58,7 +58,7 @@ requirements:
 
 test:
     commands:
-        - {0} -h
+        - {9} -h
 
 about:
     home: {5}
