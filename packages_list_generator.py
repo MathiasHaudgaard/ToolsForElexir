@@ -3,6 +3,7 @@ from bioconda_utils import utils
 import requests
 import sys
 import re
+import csv
 
 bio_tools_pkg_url = 'https://www.bio.tools/api/tool'
 
@@ -115,22 +116,41 @@ def removePrefix(condaPackages):
         result.append(pkg)
 
     return result
-    
+'''
+TODO: Extract extra information from bioconda packages to get the biotools id
+def updateMapping(fileName, bioconda, biotools):
+    updatedMapping = []
+    with open(fileName, 'r') as mapping:
+'''
 
-if __name__=="__main__":
+
+
+
+def generateOverview():
     biotoolsPackages = getBiotoolsPackages()
     filters = {
-        Keys.TOOLTYPE.value: [ToolTypes.COMMAND_LINE_TOOL.value, ToolTypes.LIBRARY.value, ToolTypes.SCRIPT.value, ToolTypes.DESKTOP_APPLICATION.value, ToolTypes.SUITE.value],
-        Keys.LANGUAGE.value: [Language.C.value, Language.CPP.value]
+        Keys.TOOLTYPE.value: [ToolTypes.COMMAND_LINE_TOOL.value, ToolTypes.LIBRARY.value, ToolTypes.SCRIPT.value, ToolTypes.DESKTOP_APPLICATION.value, ToolTypes.SUITE.value]
         }
     filteredList = filterPackageList(biotoolsPackages, filters)
     filteredNamesList = [pkg["id"] for pkg in filteredList]
     bioconda_packages = getCondaChannelPackages('bioconda')
-    bioconda_packages = [pkg['name'] for pkg in bioconda_packages.values()]
-    conda_forge_packages = [pkg['name'] for pkg in getCondaChannelPackages('conda-forge').values()]
-    conda_packages = bioconda_packages + conda_forge_packages
-    existing_packages = set([pkg["id"] for pkg in compareCondaAndBiotools(removePrefix(conda_packages), filteredList)])
-    missing_packages = list(set(filteredNamesList) - existing_packages)
-    print(len(missing_packages))
-    write_package_list(missing_packages,"c_packages")
+    bioconda_packages = set([pkg['name'] for pkg in bioconda_packages.values()])
+    with open('mapping.csv', 'r') as csvfile:
+        overlaps = 0
+        mapping = csv.reader(csvfile, delimiter=',')
+        for row in mapping:
+            if row[0] != 'null' and (len(row) == 3 or row[3] != 'NV'):
+                overlaps += 1
+        print(
+        """
+        # of packages on bio.tools: {} \n
+        # of relevant packages on bio.tools: {} \n
+        # of packages on bioconda: {} \n
+        # of packages that overlap: {}
+        """.format(len(biotoolsPackages), len(filteredNamesList), len(bioconda_packages), overlaps))
+
+    
+
+if __name__=="__main__":
+    generateOverview()
 
