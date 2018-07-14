@@ -12,8 +12,7 @@ bio_tools_pkg_url = 'https://www.bio.tools/api/tool'
 def getAttributes(metaData):
     name = metaData['name']
     version = metaData['version'] if metaData['version'] is not None else 1.0
-    url = metaData['download'][0] if len(metaData['download']) > 0 else ""
-    fn = url.split('/')[-1] if url != "" else ""
+    url = metaData['download'][0]['url'] if len(metaData['download']) > 0 else ""
     sha = ""
     home = metaData['homepage']
     summary = metaData['description']
@@ -24,7 +23,7 @@ def getAttributes(metaData):
             doi = pub['doi']
             break
 
-    return [name.lower(), version, fn, url, sha, home, summary, biotool_id, doi, name]
+    return [name.lower(), version, url, sha, home, summary, biotool_id, doi, name]
             
     
 
@@ -46,26 +45,26 @@ build:
     number: 0
 
 source:
-    url: {3}
-    sha256: {4}
+    url: {2}
+    sha256: {3}
 
 requirements:
     build:
-        - {{ compile('c') }}
+        - {{ compiler('c') }}
 
 test:
     commands:
-        - {9} -h
+        - {8} -h
 
 about:
-    home: {5}
+    home: {4}
     license: file
     license_file: COPYING
-    summary: {6}
+    summary: {5}
 extra:
     identifiers:
-        - biotools:{7}
-        - doi:{8}
+        - biotools:{6}
+        - doi:{7}
 """
 
     document = document.format(*getAttributes(r.json()))
