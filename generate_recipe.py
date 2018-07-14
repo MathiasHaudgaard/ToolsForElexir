@@ -46,15 +46,12 @@ build:
     number: 0
 
 source:
-    fn: {2}
     url: {3}
     sha256: {4}
 
 requirements:
     build:
-        - gcc
-    run:
-        - libgcc
+        - {{ compile('c') }}
 
 test:
     commands:
@@ -72,8 +69,8 @@ extra:
 """
 
     document = document.format(*getAttributes(r.json()))
-    if not os.path.exists("recipes/" + sys.argv[1]):
-        os.makedirs("recipes/" + sys.argv[1])
+    if not os.path.exists("recipes/" + sys.argv[1].lower()):
+        os.makedirs("recipes/" + sys.argv[1].lower())
     
-    with open("recipes/"+sys.argv[1] + "/meta.yaml", 'w') as yaml_file:
+    with open("recipes/"+sys.argv[1].lower() + "/meta.yaml", 'w') as yaml_file:
         yaml_file.write(document)
