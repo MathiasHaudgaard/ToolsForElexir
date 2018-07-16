@@ -38,33 +38,33 @@ if __name__ == '__main__':
     sp.call(['git checkout -b' + sys.argv[1]], shell=True)
 
     document = """package:
-    name: {0}
-    version: {1}  
+  name: {0}
+  version: {1}  
 
 build:
-    number: 0
+  number: 0
 
 source:
-    url: {2}
-    sha256: {3}
+  url: {2}
+  sha256: {3}
 
 requirements:
-    build:
-        - {{ compiler('c') }}
+  build:
+    - {{ compiler('c') }}
 
 test:
-    commands:
-        - {8} -h
+  commands:
+    - {8} -h
 
 about:
-    home: {4}
-    license: file
-    license_file: COPYING
-    summary: {5}
+  home: {4}
+  license: file
+  license_file: COPYING
+  summary: {5}
 extra:
-    identifiers:
-        - biotools:{6}
-        - doi:{7}
+  identifiers:
+    - biotools:{6}
+    - doi:{7}
 """
 
     document = document.format(*getAttributes(r.json()))
